@@ -6,14 +6,17 @@
 
     var supplierEl = document.getElementById('filter-supplier');
     var sortEl = document.getElementById('filter-sort');
-    var tbody = document.querySelector('#products-table tbody');
+    var list = document.getElementById('products-list');
+    if (!list) {
+        return;
+    }
     var emptyMsg = document.getElementById('no-products');
 
     function applyFilters() {
         var query = (searchEl.value || '').trim().toLowerCase();
         var supplier = supplierEl.value;
         var sort = sortEl.value;
-        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+        var rows = Array.prototype.slice.call(list.querySelectorAll('.product-card'));
 
         rows.forEach(function (row) {
             var matchSearch = !query || row.dataset.search.indexOf(query) !== -1;
@@ -49,7 +52,7 @@
         });
 
         visible.forEach(function (row) {
-            tbody.appendChild(row);
+            list.appendChild(row);
         });
 
         if (emptyMsg) {

@@ -138,23 +138,7 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
 </form>
     <?php endif; ?>
 
-<table id="products-table">
-    <thead>
-        <tr>
-            <th>Фото</th>
-            <th>Наименование</th>
-            <th>Категория</th>
-            <th>Описание</th>
-            <th>Производитель</th>
-            <th>Поставщик</th>
-            <th>Цена</th>
-            <th>Ед. изм.</th>
-            <th>На складе</th>
-            <th>Скидка</th>
-            <?php if ($is_admin_ui): ?><th>Действия</th><?php endif; ?>
-        </tr>
-    </thead>
-    <tbody>
+<div id="products-list" class="products-list">
     <?php foreach ($products as $p):
         $final = discounted_price((float)$p['price'], (int)$p['discount']);
         $rowClass = '';
@@ -168,42 +152,51 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
             $p['man_name'], $p['sup_name'], $p['unit_name'],
         ]);
     ?>
-        <tr class="<?= $rowClass ?><?= $is_admin_ui ? ' clickable' : '' ?>"
-            data-search="<?= htmlspecialchars(mb_strtolower($searchBlob)) ?>"
-            data-supplier="<?= htmlspecialchars($p['sup_name']) ?>"
-            data-price="<?= (float)$p['price'] ?>"
-            data-stock="<?= (int)$p['stock_qty'] ?>"
+    <article class="product-card <?= $rowClass ?><?= $is_admin_ui ? ' clickable' : '' ?>"
+        data-search="<?= htmlspecialchars(mb_strtolower($searchBlob)) ?>"
+        data-supplier="<?= htmlspecialchars($p['sup_name']) ?>"
+        data-price="<?= (float)$p['price'] ?>"
+        data-stock="<?= (int)$p['stock_qty'] ?>"
+        <?php if ($is_admin_ui): ?>
+        onclick="if(!event.target.closest('a,button,form'))location.href='/frontend/product_edit.php?article=<?= urlencode($p['article']) ?>'"
+        <?php endif; ?>>
+        <div class="product-card-photo">
+            <img class="product-photo" src="<?= htmlspecialchars(product_photo_url($p['photo'])) ?>" alt="">
+        </div>
+        <div class="product-card-body">
+            <h3 class="product-card-title">
+                <?= htmlspecialchars($p['cat_name']) ?> | <?= htmlspecialchars($p['name']) ?>
+            </h3>
+            <dl class="product-card-fields">
+                <div><dt>Описание товара:</dt><dd><?= htmlspecialchars($p['description'] ?? '') ?></dd></div>
+                <div><dt>Производитель:</dt><dd><?= htmlspecialchars($p['man_name']) ?></dd></div>
+                <div><dt>Поставщик:</dt><dd><?= htmlspecialchars($p['sup_name']) ?></dd></div>
+                <div><dt>Цена:</dt><dd>
+                    <?php if ((int)$p['discount'] > 0): ?>
+                        <span class="price-old"><?= format_price((float)$p['price']) ?></span>
+                        <span class="price-new"><?= format_price($final) ?></span>
+                    <?php else: ?>
+                        <?= format_price((float)$p['price']) ?>
+                    <?php endif; ?>
+                </dd></div>
+                <div><dt>Единица измерения:</dt><dd><?= htmlspecialchars($p['unit_name']) ?></dd></div>
+                <div><dt>Количество на складе:</dt><dd><?= (int)$p['stock_qty'] ?></dd></div>
+            </dl>
             <?php if ($is_admin_ui): ?>
-            onclick="if(!event.target.closest('a,button,form'))location.href='/frontend/product_edit.php?article=<?= urlencode($p['article']) ?>'"
-            <?php endif; ?>>
-            <td><img class="product-photo" src="<?= htmlspecialchars(product_photo_url($p['photo'])) ?>" alt=""></td>
-            <td><?= htmlspecialchars($p['name']) ?></td>
-            <td><?= htmlspecialchars($p['cat_name']) ?></td>
-            <td><?= htmlspecialchars(mb_strimwidth($p['description'] ?? '', 0, 80, '…')) ?></td>
-            <td><?= htmlspecialchars($p['man_name']) ?></td>
-            <td><?= htmlspecialchars($p['sup_name']) ?></td>
-            <td>
-                <?php if ((int)$p['discount'] > 0): ?>
-                    <span class="price-old"><?= format_price((float)$p['price']) ?></span>
-                    <span class="price-new"><?= format_price($final) ?></span>
-                <?php else: ?>
-                    <?= format_price((float)$p['price']) ?>
-                <?php endif; ?>
-            </td>
-            <td><?= htmlspecialchars($p['unit_name']) ?></td>
-            <td><?= (int)$p['stock_qty'] ?></td>
-            <td><?= (int)$p['discount'] ?>%</td>
-            <?php if ($is_admin_ui): ?>
-            <td class="actions" onclick="event.stopPropagation()">
+            <div class="actions product-card-actions" onclick="event.stopPropagation()">
                 <a class="btn" href="/frontend/product_edit.php?article=<?= urlencode($p['article']) ?>">Изменить</a>
                 <a class="btn" href="/frontend/product_delete.php?article=<?= urlencode($p['article']) ?>"
                    onclick="return confirm('Удалить товар?')">Удалить</a>
-            </td>
+            </div>
             <?php endif; ?>
-        </tr>
+        </div>
+        <div class="product-card-discount">
+            <div class="product-card-discount-label">Действующая скидка</div>
+            <div class="product-card-discount-value"><?= (int)$p['discount'] ?>%</div>
+        </div>
+    </article>
     <?php endforeach; ?>
-    </tbody>
-</table>
+</div>
 <p id="no-products" class="hidden msg">Товары не найдены.</p>
 <?php
 }
