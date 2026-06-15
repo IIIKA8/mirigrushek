@@ -2,7 +2,7 @@
     --bg: #FFFFFF;
     --secondary: #F5DEB3;
     --accent: #DEB887;
-    --sale: #2E8B57;
+    --sale: #FFDEAD;
     --oos: #D6ECFF;
     --ink: #2c2723;
     --muted: #8a7f72;
@@ -131,9 +131,9 @@ th {
 
 tr:last-child td { border-bottom: 0; }
 
-tr.row-sale td { background: var(--sale); color: #fff; }
-tr.row-sale .price-old { color: #ffcccc; }
-tr.row-sale .price-new { color: #fff; }
+tr.row-sale td { background: var(--sale); }
+tr.row-sale .price-old { color: #e0322f; }
+tr.row-sale .price-new { color: #000; }
 
 tr.row-oos td { background: var(--oos); }
 
@@ -240,10 +240,17 @@ input:focus, select:focus, textarea:focus {
     box-shadow: var(--shadow);
 }
 
-.login-box h1 {
+.login-box h1.form-title {
     font-size: 20px;
-    margin: 0 0 8px;
+    margin: 0 0 4px;
     text-align: center;
+}
+
+.login-box .form-subtitle {
+    font-size: 14px;
+    margin: 0 0 16px;
+    text-align: center;
+    color: var(--muted);
 }
 
 .login-box .logo-wrap {

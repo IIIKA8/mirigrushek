@@ -160,7 +160,7 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
         $rowClass = '';
         if ((int)$p['stock_qty'] === 0) {
             $rowClass = 'row-oos';
-        } elseif ((int)$p['discount'] > 15) {
+        } elseif ((int)$p['discount'] > 17) {
             $rowClass = 'row-sale';
         }
         $searchBlob = implode(' ', [

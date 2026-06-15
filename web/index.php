@@ -25,7 +25,8 @@ $error = isset($_GET['error']);
         <div class="logo-wrap">
             <img src="/images/icon.png" alt="МирИгрушек">
         </div>
-        <h1>ООО «МирИгрушек»</h1>
+        <h1 class="form-title">Авторизация</h1>
+        <p class="form-subtitle">ООО «МирИгрушек»</p>
         <?php if ($error): ?>
             <div class="msg error">Неверный логин или пароль.</div>
         <?php endif; ?>
