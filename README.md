@@ -11,9 +11,9 @@ curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh 
 ## Локальная установка
 
 1. Импортируйте БД в MySQL Workbench: **File → Run SQL Script → `init.sql`**
-2. Скопируйте содержимое `исходники/` и папку `images/` в корень веб-сервера (или запустите `setup.sh` на Linux)
-3. Настройте `исходники/api/config.php` (хост, пользователь, пароль)
-4. Запустите встроенный сервер PHP из каталога `исходники/`:
+2. Скопируйте содержимое `web/` и папку `images/` в корень веб-сервера (или запустите `setup.sh` на Linux)
+3. Настройте `web/api/config.php` (хост, пользователь, пароль)
+4. Запустите встроенный сервер PHP из каталога `web/`:
    ```bash
    php -S localhost:8080
    ```
@@ -23,7 +23,7 @@ curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh 
 | Путь | Описание |
 |------|----------|
 | `init.sql` | Скрипт БД в 3НФ + данные импорта |
-| `исходники/` | PHP-приложение (`api/` + `frontend/`) |
+| `web/` | PHP-приложение (`api/` + `frontend/`) |
 | `images/` | Фото товаров и ресурсы |
 | `build/erd.pdf` | ER-диаграмма |
 | `build/algorithm.pdf` | Блок-схема алгоритма |

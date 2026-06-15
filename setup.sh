@@ -127,7 +127,7 @@ mysql_cmd --default-character-set=utf8mb4 < "$HERE/init.sql"
 log "[5/7] Развёртывание сайта в $WEBROOT…"
 rm -f "$WEBROOT/index.html"
 mkdir -p "$WEBROOT/images"
-cp -rf "$HERE/исходники/." "$WEBROOT/"
+cp -rf "$HERE/web/." "$WEBROOT/"
 if [[ -d "$HERE/images" ]]; then
     cp -rf "$HERE/images/." "$WEBROOT/images/"
 fi
