@@ -39,6 +39,7 @@ startxref
 
 $erdLines = @(
     "ER Diagram - mirigrushek (3NF)",
+    "Persons 1---* Users",
     "Roles 1---* Users",
     "Users 1---* Orders",
     "OrderStatuses 1---* Orders",

@@ -10,10 +10,11 @@ $errors = [];
 $statuses = select('SELECT id, name FROM OrderStatuses ORDER BY id');
 $points = select('SELECT id, address FROM PickupPoints ORDER BY id');
 $clients = select_prepared(
-    "SELECT u.id, u.full_name FROM Users u
+    "SELECT u.id, p.full_name FROM Users u
+     JOIN Persons p ON p.id = u.person_id
      JOIN Roles r ON r.id = u.role_id
      WHERE r.name = ?
-     ORDER BY u.full_name",
+     ORDER BY p.full_name",
     's',
     ROLE_CLIENT
 );

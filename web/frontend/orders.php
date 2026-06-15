@@ -11,12 +11,13 @@ if (!can_manage()) {
 $orders = select(
     "SELECT o.id, o.order_date, o.delivery_date, o.receive_code,
             pp.address AS pickup,
-            cu.full_name AS client,
+            cp.full_name AS client,
             os.name AS status,
             GROUP_CONCAT(CONCAT(oi.product_article, ', ', oi.quantity) SEPARATOR ', ') AS items
      FROM Orders o
      LEFT JOIN PickupPoints pp ON pp.id = o.pickup_point_id
      LEFT JOIN Users cu ON cu.id = o.client_user_id
+     LEFT JOIN Persons cp ON cp.id = cu.person_id
      JOIN OrderStatuses os ON os.id = o.status_id
      LEFT JOIN OrderItems oi ON oi.order_id = o.id
      GROUP BY o.id

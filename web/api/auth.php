@@ -11,8 +11,10 @@ if ($login === '' || $password === '') {
 }
 
 $user = select_one_prepared(
-    'SELECT u.id, u.full_name, u.login, u.password, u.role_id, r.name AS role
-     FROM Users u JOIN Roles r ON r.id = u.role_id
+    'SELECT u.id, p.full_name, u.login, u.password, u.role_id, r.name AS role
+     FROM Users u
+     JOIN Persons p ON p.id = u.person_id
+     JOIN Roles r ON r.id = u.role_id
      WHERE u.login = ?',
     's',
     $login

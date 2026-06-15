@@ -2,18 +2,19 @@
 1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
 3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 842]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj
-4 0 obj<</Length 617>>stream
+4 0 obj<</Length 668>>stream
 BT /F1 11 Tf 50 800 Td (ER Diagram - mirigrushek \\(3NF\\)) Tj ET
-BT /F1 11 Tf 50 784 Td (Roles 1---* Users) Tj ET
-BT /F1 11 Tf 50 768 Td (Users 1---* Orders) Tj ET
-BT /F1 11 Tf 50 752 Td (OrderStatuses 1---* Orders) Tj ET
-BT /F1 11 Tf 50 736 Td (PickupPoints 1---* Orders) Tj ET
-BT /F1 11 Tf 50 720 Td (Products 1---* OrderItems) Tj ET
-BT /F1 11 Tf 50 704 Td (Orders 1---* OrderItems) Tj ET
-BT /F1 11 Tf 50 688 Td (Categories 1---* Products) Tj ET
-BT /F1 11 Tf 50 672 Td (Suppliers 1---* Products) Tj ET
-BT /F1 11 Tf 50 656 Td (Manufacturers 1---* Products) Tj ET
-BT /F1 11 Tf 50 640 Td (Units 1---* Products) Tj ET
+BT /F1 11 Tf 50 784 Td (Persons 1---* Users) Tj ET
+BT /F1 11 Tf 50 768 Td (Roles 1---* Users) Tj ET
+BT /F1 11 Tf 50 752 Td (Users 1---* Orders) Tj ET
+BT /F1 11 Tf 50 736 Td (OrderStatuses 1---* Orders) Tj ET
+BT /F1 11 Tf 50 720 Td (PickupPoints 1---* Orders) Tj ET
+BT /F1 11 Tf 50 704 Td (Products 1---* OrderItems) Tj ET
+BT /F1 11 Tf 50 688 Td (Orders 1---* OrderItems) Tj ET
+BT /F1 11 Tf 50 672 Td (Categories 1---* Products) Tj ET
+BT /F1 11 Tf 50 656 Td (Suppliers 1---* Products) Tj ET
+BT /F1 11 Tf 50 640 Td (Manufacturers 1---* Products) Tj ET
+BT /F1 11 Tf 50 624 Td (Units 1---* Products) Tj ET
 
 endstream
 endobj

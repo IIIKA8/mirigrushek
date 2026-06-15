@@ -1,4 +1,4 @@
-SET NAMES utf8mb4;
+﻿SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP DATABASE IF EXISTS mirigrushek;
 CREATE DATABASE mirigrushek CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -39,12 +39,18 @@ CREATE TABLE PickupPoints (
     address VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE Persons (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(200) NOT NULL
+) ENGINE=InnoDB;
+
 CREATE TABLE Users (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    person_id INT NOT NULL,
     role_id INT NOT NULL,
-    full_name VARCHAR(200) NOT NULL,
     login VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(150) NOT NULL,
+    CONSTRAINT fk_users_person FOREIGN KEY (person_id) REFERENCES Persons(id),
     CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES Roles(id)
 ) ENGINE=InnoDB;
 
@@ -160,17 +166,27 @@ INSERT INTO PickupPoints (id, address) VALUES
     (35, '630201, г. Лесной, ул. Комсомольская, 17'),
     (36, '190949, г. Лесной, ул. Мичурина, 26');
 
-INSERT INTO Users (id, role_id, full_name, login, password) VALUES
-    (1, 1, 'Ворсин Петр Евгеньевич', '94d5ous@gmail.com', 'uzWC67'),
-    (2, 1, 'Старикова Елена Павловна', 'uth4iz@mail.com', '2L6KZG'),
-    (3, 1, 'Одинцов Серафим Артёмович', '4np6se@mail.com', '8ntwUp'),
-    (4, 2, 'Сазонов Руслан Германович', 'yzls62@outlook.com', 'YOyhfR'),
-    (5, 2, 'Михайлюк Анна Вячеславовна', '1diph5e@tutanota.com', 'RSbvHv'),
-    (6, 2, 'Ситдикова Елена Анатольевна', 'tjde7c@yahoo.com', 'rwVDh9'),
-    (7, 3, 'Степанов Михаил Артёмович', '5d4zbu@tutanota.com', 'LdNyos'),
-    (8, 3, 'Ворсин Петр Евгеньевич', 'ptec8ym@yahoo.com', 'gynQMT'),
-    (9, 3, 'Старикова Елена Павловна', '1qz4kw@mail.com', 'AtnDjr'),
-    (10, 3, 'Никифорова Весения Николаевна', 'wpmrc3do@tutanota.com', 'JlFRCZ');
+INSERT INTO Persons (id, full_name) VALUES
+    (1, 'Ворсин Петр Евгеньевич'),
+    (2, 'Старикова Елена Павловна'),
+    (3, 'Одинцов Серафим Артёмович'),
+    (4, 'Сазонов Руслан Германович'),
+    (5, 'Михайлюк Анна Вячеславовна'),
+    (6, 'Ситдикова Елена Анатольевна'),
+    (7, 'Степанов Михаил Артёмович'),
+    (8, 'Никифорова Весения Николаевна');
+
+INSERT INTO Users (id, person_id, role_id, login, password) VALUES
+    (1, 1, 1, '94d5ous@gmail.com', 'uzWC67'),
+    (2, 2, 1, 'uth4iz@mail.com', '2L6KZG'),
+    (3, 3, 1, '4np6se@mail.com', '8ntwUp'),
+    (4, 4, 2, 'yzls62@outlook.com', 'YOyhfR'),
+    (5, 5, 2, '1diph5e@tutanota.com', 'RSbvHv'),
+    (6, 6, 2, 'tjde7c@yahoo.com', 'rwVDh9'),
+    (7, 7, 3, '5d4zbu@tutanota.com', 'LdNyos'),
+    (8, 1, 3, 'ptec8ym@yahoo.com', 'gynQMT'),
+    (9, 2, 3, '1qz4kw@mail.com', 'AtnDjr'),
+    (10, 8, 3, 'wpmrc3do@tutanota.com', 'JlFRCZ');
 
 INSERT INTO Products (article, name, unit_id, price, supplier_id, manufacturer_id, category_id, discount, stock_qty, description, photo) VALUES
     ('PMEZMH', 'Детский игровой набор машинок Щенячий патруль / Dogs mini . 9 героев + 9 инерфионных машинок', 1, 1414.00, 1, 1, 1, 22, 50, 'Детский набор машинок с героями мультсериала «Щенячий патруль» подойдет как для мальчиков, так и для девочек. В детский набор входит 9 фигурок щенков спасателей.', '1.jpg'),
