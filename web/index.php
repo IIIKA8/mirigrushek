@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/common.php';
 
+unset($_SESSION['editing_product']);
+
 $page = $_GET['page'] ?? 'products';
 
 $routes = [

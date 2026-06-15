@@ -5,10 +5,10 @@
 ## Быстрая установка на сервер (Ubuntu/Debian)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/USER/mirigrushek/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh | sudo bash
 ```
 
-Замените `USER/mirigrushek` на ваш репозиторий после публикации на GitHub.
+Замените `IIIKA8/mirigrushek` на ваш репозиторий после публикации на GitHub.
 
 ## Локальная установка
 

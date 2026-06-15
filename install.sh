@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${MIRIGRUSHEK_REPO:-https://github.com/USER/mirigrushek.git}"
+REPO_URL="${MIRIGRUSHEK_REPO:-https://github.com/IIIKA8/mirigrushek.git}"
 DEST="/opt/mirigrushek"
 
 if [[ $EUID -ne 0 ]]; then
     echo "Нужны права root. Запустите:" >&2
-    echo " curl -fsSL https://raw.githubusercontent.com/USER/mirigrushek/main/install.sh | sudo bash" >&2
+    echo " curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh | sudo bash" >&2
     exit 1
 fi
 
