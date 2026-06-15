@@ -1,6 +1,6 @@
 # ООО «МирИгрушек» — демоэкзамен КОД 09.02.07-2-2026 В4
 
-Информационная система магазина игрушек: PHP + MySQL + Bootstrap.
+Информационная система магазина игрушек: PHP + MySQL (структура `api/` + `frontend/`).
 
 ## Быстрая установка на сервер (Ubuntu/Debian)
 
@@ -11,9 +11,9 @@ curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh 
 ## Локальная установка
 
 1. Импортируйте БД в MySQL Workbench: **File → Run SQL Script → `init.sql`**
-2. Скопируйте `images/` в `web/images/` (или запустите `setup.sh` на Linux)
-3. Настройте `web/db.php` (хост, пользователь, пароль)
-4. Запустите встроенный сервер PHP из каталога `web/`:
+2. Скопируйте содержимое `исходники/` и папку `images/` в корень веб-сервера (или запустите `setup.sh` на Linux)
+3. Настройте `исходники/api/config.php` (хост, пользователь, пароль)
+4. Запустите встроенный сервер PHP из каталога `исходники/`:
    ```bash
    php -S localhost:8080
    ```
@@ -23,7 +23,7 @@ curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh 
 | Путь | Описание |
 |------|----------|
 | `init.sql` | Скрипт БД в 3НФ + данные импорта |
-| `web/` | PHP-приложение |
+| `исходники/` | PHP-приложение (`api/` + `frontend/`) |
 | `images/` | Фото товаров и ресурсы |
 | `build/erd.pdf` | ER-диаграмма |
 | `build/algorithm.pdf` | Блок-схема алгоритма |

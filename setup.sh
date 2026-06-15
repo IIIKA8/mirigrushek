@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DB_NAME="mirigrushek"
-DB_PASS="Xmpl123!"
+DB_PASS="123"
 WEBROOT="/var/www/html"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -127,7 +127,7 @@ mysql_cmd --default-character-set=utf8mb4 < "$HERE/init.sql"
 log "[5/7] Развёртывание сайта в $WEBROOT…"
 rm -f "$WEBROOT/index.html"
 mkdir -p "$WEBROOT/images"
-cp -rf "$HERE/web/." "$WEBROOT/"
+cp -rf "$HERE/исходники/." "$WEBROOT/"
 if [[ -d "$HERE/images" ]]; then
     cp -rf "$HERE/images/." "$WEBROOT/images/"
 fi

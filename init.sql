@@ -210,9 +210,9 @@ INSERT INTO OrderItems (order_id, product_article, quantity) VALUES
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-ALTER USER IF EXISTS 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'Xmpl123!';
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH caching_sha2_password BY 'Xmpl123!';
-ALTER USER IF EXISTS 'root'@'%' IDENTIFIED WITH caching_sha2_password BY 'Xmpl123!';
+ALTER USER IF EXISTS 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '123';
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH caching_sha2_password BY '123';
+ALTER USER IF EXISTS 'root'@'%' IDENTIFIED WITH caching_sha2_password BY '123';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
