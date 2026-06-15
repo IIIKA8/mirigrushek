@@ -1,0 +1,6 @@
+_tmp_*
+_tmp_m*
+_tmp_x*
+*.zip
+.DS_Store
+Thumbs.db
