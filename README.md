@@ -8,8 +8,6 @@
 curl -fsSL https://raw.githubusercontent.com/IIIKA8/mirigrushek/main/install.sh | sudo bash
 ```
 
-Замените `IIIKA8/mirigrushek` на ваш репозиторий после публикации на GitHub.
-
 ## Локальная установка
 
 1. Импортируйте БД в MySQL Workbench: **File → Run SQL Script → `init.sql`**
