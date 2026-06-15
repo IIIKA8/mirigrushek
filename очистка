@@ -1,0 +1,24 @@
+sudo bash -c '
+set -e
+echo "==> Остановка Apache…"
+systemctl stop apache2 2>/dev/null || true
+
+echo "==> Удаление клона репозитория…"
+rm -rf /opt/mirigrushek
+
+echo "==> Очистка сайта…"
+rm -rf /var/www/html/*
+rm -f /var/www/html/.??*
+
+echo "==> Удаление базы mirigrushek…"
+mysql -u root -p"123" -e "DROP DATABASE IF EXISTS mirigrushek;" 2>/dev/null \
+  || mysql -u root -p"Xmpl123!" -e "DROP DATABASE IF EXISTS mirigrushek;" 2>/dev/null \
+  || mysql -u root -e "DROP DATABASE IF EXISTS mirigrushek;" 2>/dev/null \
+  || mysql --defaults-file=/etc/mysql/debian.cnf -e "DROP DATABASE IF EXISTS mirigrushek;" 2>/dev/null \
+  || true
+
+echo "==> Запуск Apache…"
+systemctl start apache2 2>/dev/null || true
+
+echo "Готово. Сервер очищен от прошлой установки."
+'

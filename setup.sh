@@ -38,14 +38,58 @@ repair_dpkg() {
     apt-get install -f -y 2>/dev/null || true
 }
 
-mysql_cmd() {
+# Рабочая команда mysql (массив). Определяется detect_mysql().
+MYSQL_CLI=()
+
+detect_mysql() {
     if mysql -u root -e "SELECT 1" >/dev/null 2>&1; then
-        mysql -u root "$@"
-    elif mysql -u root -p"$DB_PASS" -e "SELECT 1" >/dev/null 2>&1; then
-        mysql -u root -p"$DB_PASS" "$@"
-    else
-        mysql "$@"
+        MYSQL_CLI=(mysql -u root)
+        return 0
     fi
+    if mysql -u root -p"$DB_PASS" -e "SELECT 1" >/dev/null 2>&1; then
+        MYSQL_CLI=(mysql -u root -p"$DB_PASS")
+        return 0
+    fi
+    if mysql -u root -p'Xmpl123!' -e "SELECT 1" >/dev/null 2>&1; then
+        MYSQL_CLI=(mysql -u root -p'Xmpl123!')
+        return 0
+    fi
+    if [[ -f /etc/mysql/debian.cnf ]] \
+        && mysql --defaults-file=/etc/mysql/debian.cnf -e "SELECT 1" >/dev/null 2>&1; then
+        MYSQL_CLI=(mysql --defaults-file=/etc/mysql/debian.cnf)
+        return 0
+    fi
+    return 1
+}
+
+mysql_cmd() {
+    if [[ ${#MYSQL_CLI[@]} -eq 0 ]]; then
+        detect_mysql || {
+            echo "ОШИБКА: не удалось подключиться к MySQL (root)." >&2
+            echo "Попробуйте: sudo mysql -e \"ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_PASS'; FLUSH PRIVILEGES;\"" >&2
+            exit 1
+        }
+    fi
+    "${MYSQL_CLI[@]}" "$@"
+}
+
+ensure_mysql_password() {
+    detect_mysql || return 1
+    if mysql -u root -p"$DB_PASS" -e "SELECT 1" >/dev/null 2>&1; then
+        MYSQL_CLI=(mysql -u root -p"$DB_PASS")
+        return 0
+    fi
+    log "Установка пароля root MySQL: $DB_PASS"
+    mysql_cmd -e "
+        ALTER USER IF EXISTS 'root'@'localhost' IDENTIFIED BY '$DB_PASS';
+        CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '$DB_PASS';
+        ALTER USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '$DB_PASS';
+        FLUSH PRIVILEGES;
+    " 2>/dev/null || mysql_cmd -e "
+        ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_PASS';
+        FLUSH PRIVILEGES;
+    "
+    MYSQL_CLI=(mysql -u root -p"$DB_PASS")
 }
 
 install_packages() {
@@ -120,6 +164,8 @@ if [[ -f "$CNF" ]]; then
     fi
 fi
 systemctl restart mysql
+
+ensure_mysql_password
 
 log "[4/7] Импорт базы данных…"
 mysql_cmd --default-character-set=utf8mb4 < "$HERE/init.sql"
