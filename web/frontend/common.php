@@ -90,6 +90,11 @@ function layout_footer(): void
 <?php
 }
 
+function text_lower(string $value): string
+{
+    return function_exists('mb_strtolower') ? mb_strtolower($value) : strtolower($value);
+}
+
 function load_products(): array
 {
     $rows = select(
@@ -103,7 +108,17 @@ function load_products(): array
          ORDER BY p.name'
     );
     if (isset($rows['status']) && $rows['status'] === 'failed') {
+        $_SESSION['catalog_error'] = 'Ошибка SQL при загрузке каталога: ' . ($rows['message'] ?? 'неизвестно');
         return [];
+    }
+    if (!$rows) {
+        $countRow = select('SELECT COUNT(*) AS cnt FROM Products');
+        $productCount = (int)($countRow[0]['cnt'] ?? 0);
+        if ($productCount === 0) {
+            $_SESSION['catalog_error'] = 'Таблица Products пуста. Импортируйте товары (Tovar.xlsx или init.sql).';
+        } else {
+            $_SESSION['catalog_error'] = 'В Products ' . $productCount . ' строк, но JOIN со справочниками (Categories, Suppliers, Manufacturers, Units) вернул 0. Проверьте category_id, supplier_id, manufacturer_id, unit_id.';
+        }
     }
     return $rows;
 }
@@ -113,7 +128,12 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
     $products = load_products();
     $suppliers = $with_filters ? select('SELECT id, name FROM Suppliers ORDER BY name') : [];
 
-    if ($with_filters): ?>
+    if (!empty($_SESSION['catalog_error'])): ?>
+        <div class="msg error"><?= htmlspecialchars($_SESSION['catalog_error']) ?></div>
+        <?php unset($_SESSION['catalog_error']); ?>
+    <?php endif; ?>
+
+    <?php if ($with_filters): ?>
 <form class="bar" id="catalog-filters" onsubmit="return false;">
     <label>Поиск
         <input type="search" id="filter-search" placeholder="По всем текстовым полям…" autocomplete="off">
@@ -153,7 +173,7 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
         ]);
     ?>
     <article class="product-card <?= $rowClass ?><?= $is_admin_ui ? ' clickable' : '' ?>"
-        data-search="<?= htmlspecialchars(mb_strtolower($searchBlob)) ?>"
+        data-search="<?= htmlspecialchars(text_lower($searchBlob)) ?>"
         data-supplier="<?= htmlspecialchars($p['sup_name']) ?>"
         data-price="<?= (float)$p['price'] ?>"
         data-stock="<?= (int)$p['stock_qty'] ?>"
@@ -197,6 +217,6 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
     </article>
     <?php endforeach; ?>
 </div>
-<p id="no-products" class="hidden msg">Товары не найдены.</p>
+<p id="no-products" class="<?= $products ? 'hidden' : '' ?> msg">Товары не найдены.</p>
 <?php
 }
