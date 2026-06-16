@@ -95,6 +95,76 @@ function text_lower(string $value): string
     return function_exists('mb_strtolower') ? mb_strtolower($value) : strtolower($value);
 }
 
+function resolve_supplier_id(string $name): int
+{
+    $name = trim($name);
+    $row = select_one_prepared('SELECT id FROM Suppliers WHERE name = ?', 's', $name);
+    if ($row) {
+        return (int)$row['id'];
+    }
+    execute_prepared('INSERT INTO Suppliers (name) VALUES (?)', 's', $name);
+    return (int)$_SERVER['db']->insert_id;
+}
+
+function save_resized_product_image(string $tmpPath, string $destPath, int $maxW = 300, int $maxH = 200): bool
+{
+    $info = @getimagesize($tmpPath);
+    if (!$info) {
+        return false;
+    }
+
+    $srcW = $info[0];
+    $srcH = $info[1];
+    $scale = min($maxW / $srcW, $maxH / $srcH, 1.0);
+    $dstW = max(1, (int)round($srcW * $scale));
+    $dstH = max(1, (int)round($srcH * $scale));
+
+    switch ($info[2]) {
+        case IMAGETYPE_JPEG:
+            $src = imagecreatefromjpeg($tmpPath);
+            break;
+        case IMAGETYPE_PNG:
+            $src = imagecreatefrompng($tmpPath);
+            break;
+        case IMAGETYPE_GIF:
+            $src = imagecreatefromgif($tmpPath);
+            break;
+        case IMAGETYPE_WEBP:
+            if (!function_exists('imagecreatefromwebp')) {
+                return false;
+            }
+            $src = imagecreatefromwebp($tmpPath);
+            break;
+        default:
+            return false;
+    }
+
+    if (!$src) {
+        return false;
+    }
+
+    $dst = imagecreatetruecolor($dstW, $dstH);
+    if ($info[2] === IMAGETYPE_PNG || $info[2] === IMAGETYPE_GIF) {
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+    }
+
+    imagecopyresampled($dst, $src, 0, 0, 0, 0, $dstW, $dstH, $srcW, $srcH);
+
+    $ext = strtolower(pathinfo($destPath, PATHINFO_EXTENSION));
+    $ok = match ($ext) {
+        'png' => imagepng($dst, $destPath),
+        'gif' => imagegif($dst, $destPath),
+        'webp' => function_exists('imagewebp') ? imagewebp($dst, $destPath) : false,
+        default => imagejpeg($dst, $destPath, 90),
+    };
+
+    imagedestroy($src);
+    imagedestroy($dst);
+
+    return (bool)$ok;
+}
+
 function load_products(): array
 {
     $rows = select(
@@ -126,7 +196,7 @@ function load_products(): array
 function render_catalog(bool $with_filters, bool $is_admin_ui): void
 {
     $products = load_products();
-    $suppliers = $with_filters ? select('SELECT id, name FROM Suppliers ORDER BY name') : [];
+    $manufacturers = $with_filters ? select('SELECT id, name FROM Manufacturers ORDER BY name') : [];
 
     if (!empty($_SESSION['catalog_error'])): ?>
         <div class="msg error"><?= htmlspecialchars($_SESSION['catalog_error']) ?></div>
@@ -138,11 +208,11 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
     <label>Поиск
         <input type="search" id="filter-search" placeholder="По всем текстовым полям…" autocomplete="off">
     </label>
-    <label>Поставщик
-        <select id="filter-supplier">
-            <option value="">Все поставщики</option>
-            <?php foreach ($suppliers as $sup): ?>
-                <option value="<?= htmlspecialchars($sup['name']) ?>"><?= htmlspecialchars($sup['name']) ?></option>
+    <label>Производитель
+        <select id="filter-manufacturer">
+            <option value="">Все производители</option>
+            <?php foreach ($manufacturers as $man): ?>
+                <option value="<?= htmlspecialchars($man['name']) ?>"><?= htmlspecialchars($man['name']) ?></option>
             <?php endforeach; ?>
         </select>
     </label>
@@ -153,6 +223,8 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
             <option value="price_desc">Цена ↓</option>
             <option value="stock_asc">Кол-во на складе ↑</option>
             <option value="stock_desc">Кол-во на складе ↓</option>
+            <option value="discount_asc">Скидка ↑</option>
+            <option value="discount_desc">Скидка ↓</option>
         </select>
     </label>
 </form>
@@ -174,9 +246,10 @@ function render_catalog(bool $with_filters, bool $is_admin_ui): void
     ?>
     <article class="product-card <?= $rowClass ?><?= $is_admin_ui ? ' clickable' : '' ?>"
         data-search="<?= htmlspecialchars(text_lower($searchBlob)) ?>"
-        data-supplier="<?= htmlspecialchars($p['sup_name']) ?>"
+        data-manufacturer="<?= htmlspecialchars($p['man_name']) ?>"
         data-price="<?= (float)$p['price'] ?>"
         data-stock="<?= (int)$p['stock_qty'] ?>"
+        data-discount="<?= (int)$p['discount'] ?>"
         <?php if ($is_admin_ui): ?>
         onclick="if(!event.target.closest('a,button,form'))location.href='/frontend/product_edit.php?article=<?= urlencode($p['article']) ?>'"
         <?php endif; ?>>

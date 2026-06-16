@@ -176,7 +176,7 @@ layout_header($isEdit ? "Редактирование заказа №$id" : 'Д
     <label>Дата заказа
         <input type="date" name="order_date" value="<?= htmlspecialchars($order['order_date'] ?? '') ?>">
     </label>
-    <label>Дата доставки
+    <label>Дата выдачи
         <input type="date" name="delivery_date" value="<?= htmlspecialchars($order['delivery_date'] ?? '') ?>">
     </label>
     <label>Код для получения

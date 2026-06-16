@@ -4,7 +4,7 @@
         return;
     }
 
-    var supplierEl = document.getElementById('filter-supplier');
+    var manufacturerEl = document.getElementById('filter-manufacturer');
     var sortEl = document.getElementById('filter-sort');
     var list = document.getElementById('products-list');
     if (!list) {
@@ -14,14 +14,14 @@
 
     function applyFilters() {
         var query = (searchEl.value || '').trim().toLowerCase();
-        var supplier = supplierEl.value;
+        var manufacturer = manufacturerEl.value;
         var sort = sortEl.value;
         var rows = Array.prototype.slice.call(list.querySelectorAll('.product-card'));
 
         rows.forEach(function (row) {
             var matchSearch = !query || row.dataset.search.indexOf(query) !== -1;
-            var matchSupplier = !supplier || row.dataset.supplier === supplier;
-            row.classList.toggle('hidden', !(matchSearch && matchSupplier));
+            var matchManufacturer = !manufacturer || row.dataset.manufacturer === manufacturer;
+            row.classList.toggle('hidden', !(matchSearch && matchManufacturer));
         });
 
         var visible = rows.filter(function (row) {
@@ -36,6 +36,8 @@
             var bp = parseFloat(b.dataset.price);
             var as = parseInt(a.dataset.stock, 10);
             var bs = parseInt(b.dataset.stock, 10);
+            var ad = parseInt(a.dataset.discount, 10);
+            var bd = parseInt(b.dataset.discount, 10);
             if (sort === 'price_asc') {
                 return ap - bp;
             }
@@ -47,6 +49,12 @@
             }
             if (sort === 'stock_desc') {
                 return bs - as;
+            }
+            if (sort === 'discount_asc') {
+                return ad - bd;
+            }
+            if (sort === 'discount_desc') {
+                return bd - ad;
             }
             return 0;
         });
@@ -61,6 +69,6 @@
     }
 
     searchEl.addEventListener('input', applyFilters);
-    supplierEl.addEventListener('change', applyFilters);
+    manufacturerEl.addEventListener('change', applyFilters);
     sortEl.addEventListener('change', applyFilters);
 })();
